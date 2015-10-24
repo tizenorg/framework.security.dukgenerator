@@ -41,7 +41,7 @@ rm -f %{?buildroot:%{buildroot}}%{_infodir}/dir
 find %{?buildroot:%{buildroot}} -regex ".*\\.la$" | xargs rm -f --
 
 mkdir -p %{buildroot}/usr/share/license
-cp LICENSE.Apache-2.0 %{buildroot}/usr/share/license/%{name}
+cp LICENSE %{buildroot}/usr/share/license/%{name}
 
 
 %files

@@ -23,26 +23,23 @@
 #include <SecCryptoSvc.h>
 #include <dukgen.h>
 
-char* GetDeviceUniqueKey(char* pAppId, int idLen, int keyLen)
+char *GetDeviceUniqueKey(char *pAppId, int idLen, int keyLen)
 {
-	unsigned char* pUniqueKey = NULL;
-	char* pDuk = NULL;
-	bool result = true;
+	unsigned char *pUniqueKey = NULL;
+	char *pDuk = NULL;
 
-	pUniqueKey = (unsigned char*)calloc(keyLen,1);
-	if(pUniqueKey == NULL)
-		return NULL;
+	if (!(pUniqueKey = (unsigned char *)calloc(keyLen, 1)))
+		goto exit;
 
-	result = SecFrameGeneratePlatformUniqueKey((unsigned int)keyLen , pUniqueKey);
-	if(result == false)
-	{
-		free(pUniqueKey);
-		return NULL;
-	}
+	if (!SecFrameGeneratePlatformUniqueKey((unsigned int)keyLen , pUniqueKey))
+		goto exit;
 
-	pDuk = (char*)calloc(keyLen, 1);
-	PKCS5_PBKDF2_HMAC_SHA1(pAppId, idLen, (unsigned char*)pUniqueKey, keyLen, 1, keyLen, (unsigned char*)pDuk);
+	if (!(pDuk = (char *)calloc(keyLen, 1)))
+		goto exit;
+
+	PKCS5_PBKDF2_HMAC_SHA1(pAppId, idLen, (unsigned char *)pUniqueKey, keyLen, 1, keyLen, (unsigned char *)pDuk);
+
+exit:
 	free(pUniqueKey);
-
 	return pDuk;
 }
